@@ -1,4 +1,4 @@
-import ui
+from api import ui
 
 ui.console.clear()
 

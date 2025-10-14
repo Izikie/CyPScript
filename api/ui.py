@@ -2,10 +2,8 @@ from typing import List, Tuple, Union, Callable, Any, Optional, Type, TypeVar as
 from beaupy import confirm as _confirm, select as _select, select_multiple as _select_multiple, prompt as _prompt
 from rich.console import Console as _Console
 
-# Type variable for Beaupy prompt
 _TargetType = _TypeVar('_TargetType')
 
-# Static console instance
 console = _Console()
 
 # === STYLE CONSTANTS ===
@@ -14,6 +12,8 @@ _cursor_style = "bright_cyan"
 
 _tick_character = "*"
 _tick_style = "bright_cyan"
+
+# === PROMPTS ===
 
 def confirm_prompt(
     question: str,
@@ -81,7 +81,7 @@ def select_multiple_prompt(
 def prompt_input(
     prompt_text: str,
     target_type: Type[_TargetType] = str,
-    validator: Callable[[_TargetType], bool] = lambda input: True,
+    validator: Callable[[_TargetType], bool] = lambda _: True,
     secure: bool = False,
     raise_validation_fail: bool = True,
     raise_type_conversion_fail: bool = True,
