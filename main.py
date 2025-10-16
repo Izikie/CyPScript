@@ -1,6 +1,11 @@
 from api import ui
+import os
 
 ui.console.clear()
+
+if os.geteuid() != 0:
+    ui.console.print("[bold red]⚠️ Please execute this with sudo.[/bold red]")
+    exit(-1)
 
 if not ui.confirm_prompt("Did you read the README and check your forensic questions?"):
     ui.console.print(
