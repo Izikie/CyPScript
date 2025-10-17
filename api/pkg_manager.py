@@ -1,5 +1,20 @@
+import sys
 from abc import ABC, abstractmethod
+from enum import Enum, auto
+
+from distro import distro
+
+from api.errors import fatal_exit, ERR_NOT_LINUX, ERR_UNSUPPORTED_DISTRO
 from api.utils import *
+
+class DistroType(Enum):
+    DEBIAN = auto()
+    UBUNTU = auto()
+    MINT = auto()
+    FEDORA = auto()
+    UNKNOWN = auto()
+
+DISTRO_TYPE = DistroType.UNKNOWN
 
 class PackageManager(ABC):
     @abstractmethod
@@ -57,11 +72,27 @@ class RpmPackageManager(PackageManager):
     def cleanup(self) -> None:
         pass
 
-def get_package_manager() -> PackageManager:
-    distro_type = detect_distro()
-    if distro_type in (DistroType.DEBIAN, DistroType.UBUNTU, DistroType.MINT):
-        return AptPackageManager()
-    elif distro_type == DistroType.FEDORA:
-        return RpmPackageManager()
-    else:
-        raise RuntimeError(f"No package manager for distro: {distro_type}")
+def detect_distro():
+    global DISTRO_TYPE
+    if not sys.platform.startswith("linux"):
+        fatal_exit("Only Linux is supported", ERR_NOT_LINUX)
+
+    match distro.id().lower():
+        case "linuxmint":
+            DISTRO_TYPE = DistroType.MINT
+        case "ubuntu":
+            DISTRO_TYPE = DistroType.UBUNTU
+        case "debian":
+            DISTRO_TYPE = DistroType.DEBIAN
+        case "fedora":
+            DISTRO_TYPE = DistroType.FEDORA
+        case _:
+            fatal_exit("Unsupported Linux distribution", ERR_UNSUPPORTED_DISTRO)
+
+def get_package_manager() -> PackageManager | None:
+    match DISTRO_TYPE:
+        case DistroType.DEBIAN | DistroType.UBUNTU | DistroType.MINT:
+            return AptPackageManager()
+        case DistroType.FEDORA:
+            return RpmPackageManager()
+    return None
