@@ -1,11 +1,6 @@
-from pathlib import Path
-from datetime import datetime
-
+from api.logger import LOG_FILE, LOG_SEPARATOR
 from api.ui import console
 import subprocess
-
-LOG_FILE = Path(f"out-{datetime.now().strftime('%Y%m%d-%H%M%S')}.log")
-LOG_SEPARATOR = "=" * 80 + "\n"
 
 def run_command(command: str) -> subprocess.CompletedProcess:
     try:
@@ -26,4 +21,4 @@ def run_command(command: str) -> subprocess.CompletedProcess:
             f.write(f"$ {command}\n")
             f.write(f"EXCEPTION: {e}\n")
             f.write(LOG_SEPARATOR)
-        return subprocess.CompletedProcess(command, 1, "", str(e))
+        return subprocess.CompletedProcess(args=command, returncode=1, stdout="", stderr=str(e))

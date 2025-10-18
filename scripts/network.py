@@ -1,2 +1,2 @@
-def cron_dumper():
+def network():
     print("TODO: Implement")

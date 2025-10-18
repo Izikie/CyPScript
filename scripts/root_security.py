@@ -1,2 +1,2 @@
-def cron_dumper():
+def root_security():
     print("TODO: Implement")

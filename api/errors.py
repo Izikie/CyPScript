@@ -1,7 +1,7 @@
 import sys
 
 from api.ui import console
-from api.utils import LOG_FILE, LOG_SEPARATOR
+from api.logger import LOG_FILE, LOG_SEPARATOR
 
 # === SYSTEM ERRORS ===
 ERR_NOT_LINUX = -1
