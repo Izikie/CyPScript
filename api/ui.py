@@ -15,6 +15,10 @@ _tick_style = "bright_cyan"
 
 # === PROMPTS ===
 
+def pause_prompt():
+    console.print("\nPress [bold yellow]Press[/bold yellow] any key to continue...")
+    input()
+
 def confirm_prompt(
     question: str,
     default_is_yes: bool = False,
@@ -27,7 +31,6 @@ def confirm_prompt(
         cursor_style=_cursor_style,
         char_prompt=True
     )
-
 
 def select_prompt(
     question: str,
@@ -48,7 +51,6 @@ def select_prompt(
         pagination=pagination,
         page_size=page_size
     )
-
 
 def select_multiple_prompt(
     question: str,
@@ -76,7 +78,6 @@ def select_multiple_prompt(
         pagination=pagination,
         page_size=page_size
     )
-
 
 def prompt_input(
     prompt_text: str,

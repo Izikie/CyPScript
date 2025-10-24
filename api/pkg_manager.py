@@ -42,19 +42,19 @@ class PackageManager(ABC):
 
 class AptPackageManager(PackageManager):
     def install(self, package_name: str) -> None:
-        run_command(f"apt-get install -y {package_name}")
+        run_command(f"apt-get install -yqq {package_name}")
 
     def uninstall(self, package_name: str) -> None:
-        run_command(f"apt-get remove -y {package_name}")
+        run_command(f"apt-get remove -yqq {package_name}")
 
     def update(self: str) -> None:
-        run_command("apt-get update -y")
+        run_command("apt-get update -yqq")
 
     def upgrade(self: str) -> None:
-        run_command("apt-get upgrade -y")
+        run_command("apt-get upgrade -yqq")
 
     def cleanup(self) -> None:
-        run_command("apt-get autoremove -y")
+        run_command("apt-get autoremove -yqq")
 
 class RpmPackageManager(PackageManager):
     def install(self, package_name: str) -> None:

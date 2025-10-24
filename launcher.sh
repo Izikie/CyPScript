@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+# ad dev
+
 # Colors
 GREEN="\033[1;32m"
 CYAN="\033[1;36m"
 YELLOW="\033[1;33m"
 RED="\033[1;31m"
 RESET="\033[0m"
+
+clear
 
 # Elevate privileges
 echo -e "${CYAN}🚀 Elevating privileges...${RESET}"
@@ -18,7 +22,7 @@ if [ -f /etc/os-release ]; then
     . /etc/os-release
     DISTRO=$ID
 else
-    echo -e "${RED}❌ Cannot detect Linux distribution!${RESET}"
+    echo -e "${RED}❌ Cannot detect distro!${RESET}"
     exit 1
 fi
 echo -e "${GREEN}✅ Detected distro: ${DISTRO}${RESET}"
@@ -37,33 +41,33 @@ case "$DISTRO" in
         exit 1
         ;;
 esac
-echo -e "${GREEN}✔ System packages ready${RESET}"
+echo -e "${GREEN}✔  System packages ready${RESET}"
 
 # Setup virtual environment
 if [ ! -d ".venv" ]; then
-    echo -e "${YELLOW}🛠 Setting up virtual environment...${RESET}"
-    python3 -m venv .venv
+    echo -e "${YELLOW}🛠  Setting up virtual environment...${RESET}"
+    python3 -m venv .venv >/dev/null 2>&1
 else
-    echo -e "${CYAN}✔ Virtual environment exists, skipping...${RESET}"
+    echo -e "${CYAN}✔  Virtual environment exists, skipping...${RESET}"
 fi
 
 # Activate virtual environment
 source .venv/bin/activate
 
 # Upgrade pip
-echo -e "${YELLOW}⬆ Upgrading pip...${RESET}"
-python3 -m pip install -qq --upgrade pip
-echo -e "${GREEN}✔ pip is ready${RESET}"
+echo -e "${YELLOW}🔺 Upgrading pip...${RESET}"
+python3 -m pip install -qq --upgrade pip >/dev/null 2>&1
+echo -e "${GREEN}✔  pip is ready${RESET}"
 
 # Install required Python packages
 echo -e "${YELLOW}📦 Installing required Python packages...${RESET}"
-python3 -m pip install -qq --upgrade distro beaupy
-echo -e "${GREEN}✔ Python dependencies ready${RESET}"
+python3 -m pip install -qq --upgrade distro beaupy >/dev/null 2>&1
+echo -e "${GREEN}✔  Python dependencies ready${RESET}"
 
 # Run main.py
 if [ -f "./main.py" ]; then
     echo -e "${GREEN}▶ Running script inside virtual environment...${RESET}"
-    .venv/bin/python main.py
+    sudo .venv/bin/python main.py
 else
     echo -e "${RED}⚠️ script not found in current directory!${RESET}"
 fi
