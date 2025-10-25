@@ -1,6 +1,5 @@
 from api.logger import info, out
 from api.pkg_manager import get_package_manager
-from api.ui import pause_prompt
 from api.utils import run_command, set_setting
 
 SYSCTL_CONFIG = "/etc/sysctl.conf"
@@ -45,4 +44,3 @@ def network():
     result = run_command("cat /etc/hosts")
     if result.returncode == 0:
         out('\n'.join('\t' + line for line in result.stdout.splitlines()))
-        pause_prompt()

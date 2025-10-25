@@ -29,7 +29,6 @@ def success(message):
 def info_file(message: str) -> None:
     with LOG_FILE.open("a", encoding="utf-8") as f:
         f.write(f"INFO: {message}\n")
-        f.write(LOG_SEPARATOR)
 
 def info_console(message: str) -> None:
     console.print(f"[bold yellow][⚠️][/bold yellow] {message}")
@@ -42,7 +41,6 @@ def info(message: str) -> None:
 def error_file(message: str) -> None:
     with LOG_FILE.open("a", encoding="utf-8") as f:
         f.write(f"ERROR: {message}\n")
-        f.write(LOG_SEPARATOR)
 
 def error_console(message: str) -> None:
     console.print(f"[bold red][❌][/bold red] {message}")

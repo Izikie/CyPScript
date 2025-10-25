@@ -1,6 +1,9 @@
 from api.logger import LOG_FILE, LOG_SEPARATOR, error_console, error_file, info, success
 import subprocess
 
+def run_command_args(args: list[str]) -> subprocess.CompletedProcess:
+    return run_command(" ".join(args))
+
 def run_command(command: str) -> subprocess.CompletedProcess:
     try:
         result = subprocess.run(

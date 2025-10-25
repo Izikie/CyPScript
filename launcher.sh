@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-# ad dev
-
 # Colors
 GREEN="\033[1;32m"
 CYAN="\033[1;36m"
@@ -25,23 +23,22 @@ else
     echo -e "${RED}❌ Cannot detect distro!${RESET}"
     exit 1
 fi
-echo -e "${GREEN}✅ Detected distro: ${DISTRO}${RESET}"
+echo -e "${GREEN}✔  Detected Distro: ${DISTRO}${RESET}"
 
 # Install system packages
 echo -e "${YELLOW}⚡ Installing system packages...${RESET}"
 case "$DISTRO" in
     debian|ubuntu|linuxmint)
-        sudo DEBIAN_FRONTEND=noninteractive apt install -yqq python3 python3-venv python3-pip >/dev/null 2>&1
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -yqq python3 python3-venv python3-pip >/dev/null 2>&1
         ;;
     fedora)
         sudo dnf install -yqq python3 python3-venv python3-pip >/dev/null 2>&1
         ;;
     *)
-        echo -e "${RED}❌ Unsupported distro: $DISTRO${RESET}"
+        echo -e "${RED}❌ Unsupported Distro: $DISTRO${RESET}"
         exit 1
         ;;
 esac
-echo -e "${GREEN}✔  System packages ready${RESET}"
 
 # Setup virtual environment
 if [ ! -d ".venv" ]; then
@@ -57,12 +54,10 @@ source .venv/bin/activate
 # Upgrade pip
 echo -e "${YELLOW}🔺 Upgrading pip...${RESET}"
 python3 -m pip install -qq --upgrade pip >/dev/null 2>&1
-echo -e "${GREEN}✔  pip is ready${RESET}"
 
 # Install required Python packages
-echo -e "${YELLOW}📦 Installing required Python packages...${RESET}"
+echo -e "${YELLOW}⚡ Installing required Python packages...${RESET}"
 python3 -m pip install -qq --upgrade distro beaupy >/dev/null 2>&1
-echo -e "${GREEN}✔  Python dependencies ready${RESET}"
 
 # Run main.py
 if [ -f "./main.py" ]; then

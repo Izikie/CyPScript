@@ -2,14 +2,14 @@ from api.errors import fatal_exit, ERR_UNKNOWN_OPTION
 from api.logger import LOG_SEPARATOR, log
 from api.pkg_manager import detect_distro
 from api.ui import *
-from scripts.account_security import account_security
+from scripts.account_security import account_security, DEFAULT_PASSWORD
 from scripts.cron_dumper import cron_dumper
 from scripts.file_scanner import file_scanner
 from scripts.network import network
 from scripts.root_security import root_security
 from scripts.software import software_manager
 from scripts.update import update_system
-from scripts.user_managment import user_management, DEFAULT_PASSWORD
+from scripts.user_managment import user_management
 
 console.clear()
 detect_distro()
@@ -64,8 +64,10 @@ while True:
                 func()
             else:
                 fatal_exit("Unknown option selected.", ERR_UNKNOWN_OPTION)
+
             if i == len(options):
                 pause_prompt()
+
         console.clear()
     except (KeyboardInterrupt, EOFError):
         console.print("\n[bold red]Operation interrupted by user.[/bold red]")
