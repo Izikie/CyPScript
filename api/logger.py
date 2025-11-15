@@ -5,7 +5,16 @@ from rich.text import Text
 
 from api.ui import console
 
-LOG_FILE = Path(f"out-{datetime.now().strftime('%Y%m%d-%H%M%S')}.log")
+SYMBOL_SUCCESS = "✔"
+SYMBOL_INFO = "!"
+SYMBOL_ERROR = "⛌"
+
+LOG_FOLDER = Path(f"logs-{datetime.now().strftime('%Y%m%d-%H%M%S')}")
+LOG_FILE = LOG_FOLDER / "log.txt"
+
+# Make sure the folder exists
+LOG_FOLDER.mkdir(parents=True, exist_ok=True)
+
 LOG_SEPARATOR = "=" * 80 + "\n"
 
 def out(message: str):
@@ -19,19 +28,19 @@ def log(message: str):
     else:
         plain_message = Text.from_markup(message).plain
 
-    with LOG_FILE.open("a", encoding="utf-8") as f:
+    with LOG_FILE.open(mode = "a", encoding = "utf-8") as f:
         f.write(f"{plain_message}\n")
 
 def success(message):
-    console.print(f"[bold green][✔️][/bold green] {message}")
+    console.print(f"[bold green][{SYMBOL_SUCCESS}][/bold green] {message}")
 
 # === Info Logging ===
 def info_file(message: str) -> None:
-    with LOG_FILE.open("a", encoding="utf-8") as f:
+    with LOG_FILE.open(mode = "a", encoding = "utf-8") as f:
         f.write(f"INFO: {message}\n")
 
 def info_console(message: str) -> None:
-    console.print(f"[bold yellow][⚠️][/bold yellow] {message}")
+    console.print(f"[bold yellow][{SYMBOL_INFO}][/bold yellow] {message}")
 
 def info(message: str) -> None:
     info_console(message)
@@ -39,7 +48,7 @@ def info(message: str) -> None:
 
 # === Error Logging ===
 def error_file(message: str) -> None:
-    with LOG_FILE.open("a", encoding="utf-8") as f:
+    with LOG_FILE.open(mode = "a", encoding="utf-8") as f:
         f.write(f"ERROR: {message}\n")
 
 def error_console(message: str) -> None:

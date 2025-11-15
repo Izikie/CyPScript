@@ -1,98 +1,28 @@
 import sys
-from abc import ABC, abstractmethod
-from enum import Enum, auto
 
 from distro import distro
 
 from api.errors import fatal_exit, ERR_NOT_LINUX, ERR_UNSUPPORTED_DISTRO
 from api.utils import *
 
-class DistroType(Enum):
-    DEBIAN = auto()
-    UBUNTU = auto()
-    MINT = auto()
-    FEDORA = auto()
-    UNKNOWN = auto()
+def install(package_name: str) -> None:
+    run_command(f"apt-get install -yqq {package_name}")
 
-DISTRO_TYPE = DistroType.UNKNOWN
+def uninstall(package_name: str) -> None:
+    run_command(f"apt-get remove -yqq {package_name}")
 
-class PackageManager(ABC):
-    @abstractmethod
-    def install(self, package_name: str) -> None:
-        pass
+def update() -> None:
+    run_command("apt-get update -yqq")
 
-    @abstractmethod
-    def uninstall(self, package_name: str) -> None:
-        pass
+def upgrade() -> None:
+    run_command("apt-get upgrade -yqq")
 
-    @abstractmethod
-    def update(self: str) -> None:
-        """Refresh the package list"""
-        pass
+def cleanup() -> None:
+    run_command("apt-get autoremove -yqq")
 
-    @abstractmethod
-    def upgrade(self) -> None:
-        """Upgrade installed packages"""
-        pass
-
-    @abstractmethod
-    def cleanup(self) -> None:
-        """Remove orphaned/unneeded packages"""
-        pass
-
-class AptPackageManager(PackageManager):
-    def install(self, package_name: str) -> None:
-        run_command(f"apt-get install -yqq {package_name}")
-
-    def uninstall(self, package_name: str) -> None:
-        run_command(f"apt-get remove -yqq {package_name}")
-
-    def update(self: str) -> None:
-        run_command("apt-get update -yqq")
-
-    def upgrade(self: str) -> None:
-        run_command("apt-get upgrade -yqq")
-
-    def cleanup(self) -> None:
-        run_command("apt-get autoremove -yqq")
-
-class RpmPackageManager(PackageManager):
-    def install(self, package_name: str) -> None:
-        pass
-
-    def uninstall(self, package_name: str) -> None:
-        pass
-
-    def update(self) -> None:
-        pass
-
-    def upgrade(self) -> None:
-        pass
-
-    def cleanup(self) -> None:
-        pass
-
-def detect_distro():
-    global DISTRO_TYPE
+def ensure_compatibility():
     if not sys.platform.startswith("linux"):
         fatal_exit("Only Linux is supported", ERR_NOT_LINUX)
 
-    match distro.id().lower():
-        case "linuxmint":
-            DISTRO_TYPE = DistroType.MINT
-        case "ubuntu":
-            DISTRO_TYPE = DistroType.UBUNTU
-        case "debian":
-            DISTRO_TYPE = DistroType.DEBIAN
-        case "fedora":
-            DISTRO_TYPE = DistroType.FEDORA
-        case _:
-            fatal_exit("Unsupported Linux distribution", ERR_UNSUPPORTED_DISTRO)
-
-def get_package_manager() -> PackageManager | None:
-    match DISTRO_TYPE:
-        case DistroType.DEBIAN | DistroType.UBUNTU | DistroType.MINT:
-            return AptPackageManager()
-        case DistroType.FEDORA:
-            return RpmPackageManager()
-    return None
+    if "debian" not in distro.id().lower() and "debian" not in distro.like().lower().split():
+        fatal_exit("Unsupported Linux distribution, only Debian-based distros are supported", ERR_UNSUPPORTED_DISTRO)

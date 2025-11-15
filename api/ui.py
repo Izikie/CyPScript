@@ -47,6 +47,7 @@ def select_prompt(
         preprocessor=preprocessor,
         cursor=_cursor,
         cursor_style=_cursor_style,
+        return_index=True,
         strict=strict,
         pagination=pagination,
         page_size=page_size

@@ -1,5 +1,5 @@
-from api.pkg_manager import get_package_manager
-from api.utils import set_setting, run_command_args, run_command
+from api.pkg_manager import install
+from api.utils import set_setting, run_command
 
 DEFAULT_PASSWORD = "Cyb3rPatr!0t$" # NEVER DO THIS A REAL SYSTEM, ONLY FOR SPEED DURING COMPETITION !!!!
 
@@ -9,10 +9,9 @@ FAILLOCK_CONFIG = "/etc/security/faillock.conf"
 PAM_PWQUALITY = "/usr/share/pam-configs/pwquality"
 PAM_UNIX = "/usr/share/pam-configs/unix"
 
-
 # Remove nullok this time from common-auth
 def account_security():
-    get_package_manager().install("libpam-pwquality")
+    install("libpam-pwquality")
 
     # /etc/login.defs
     login_settings = {

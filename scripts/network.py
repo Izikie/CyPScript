@@ -1,5 +1,5 @@
 from api.logger import info, out
-from api.pkg_manager import get_package_manager
+from api.pkg_manager import install
 from api.utils import run_command, set_setting
 
 SYSCTL_CONFIG = "/etc/sysctl.conf"
@@ -15,7 +15,7 @@ DISABLE_IPV6 = "1"
 
 def network():
     info("Installing and enabling UFW (Uncomplicated Firewall)")
-    get_package_manager().install("ufw")
+    install("ufw")
     run_command("ufw --force enable")
 
     info("Turning on UFW logging")

@@ -1,6 +1,6 @@
 from api.errors import fatal_exit, ERR_UNKNOWN_OPTION
 from api.logger import LOG_SEPARATOR, log
-from api.pkg_manager import detect_distro
+from api.pkg_manager import ensure_compatibility
 from api.ui import *
 from scripts.account_security import account_security, DEFAULT_PASSWORD
 from scripts.cron_dumper import cron_dumper
@@ -12,14 +12,13 @@ from scripts.update import update_system
 from scripts.user_managment import user_management
 
 console.clear()
-detect_distro()
+ensure_compatibility()
 
-if not confirm_prompt("Did you read the README and check your forensic questions?"):
-    console.print("[bold red]⚠️ You should really read the README and check your forensic questions first.[/bold red]")
-    console.print("[red]Skipping this can cause issues or make the VM incompletable.[/red]")
-    console.print()
-    console.print("[yellow]" + LOG_SEPARATOR + "[/yellow]")
-    exit(-1)
+if not confirm_prompt("Have you read the README and attempted to the best of your ability to complete the forensic questions?"):
+    console.print("[bold red]Make sure you read the README and check the forensic questions first.[/bold red]")
+    console.print("[bold red]Skipping this might make them impossible to solve.[/bold red]")
+    console.print("\n[yellow]" + LOG_SEPARATOR + "[/yellow]")
+    exit(1)
 
 option_map = {
     "Scan Files": file_scanner,
@@ -33,6 +32,7 @@ option_map = {
     "Exit": exit
 }
 
+
 def menu():
     console.print(r""".______    __       _______  _______ .______   
 |   _  \  |  |     |   ____||   ____||   _  \  
@@ -41,35 +41,30 @@ def menu():
 |  |_)  | |  `----.|  |____ |  |____ |  |      
 |______/  |_______||_______||_______|| _|      
 """)
-
     console.print(
         "[bold red]WARNING:[/bold red][red] This script is designed for Cyber patriot VM aligned environments.[/red]")
     console.print("[red]Use in other environments may lead to unexpected results.[/red]\n")
-
     console.print(
         f"[bold green]IMPORTANT:[/bold green] The password all users will be set to is [yellow]'[/yellow][green]{DEFAULT_PASSWORD}[/green][yellow]'[/yellow]\n")
 
-    selected_options = select_multiple_prompt("Select what to do?", list(option_map.keys()))
+    selected = select_multiple_prompt("Select what to do?", list(option_map))
     console.clear()
-    return selected_options
+    return selected
 
-while True:
-    try:
+try:
+    while True:
         options = menu()
-
         for i, opt in enumerate(options, start=1):
             func = option_map.get(opt)
-            if func:
-                log(f"\n[bold cyan]{'*' * 10} {opt} ({i}/{len(options)}) {'*' * 10}[/bold cyan]\n")
-                func()
-            else:
+            if not func:
                 fatal_exit("Unknown option selected.", ERR_UNKNOWN_OPTION)
+
+            log(f"\n[bold cyan]{'*' * 10} {opt} ({i}/{len(options)}) {'*' * 10}[/bold cyan]\n")
+            func()
 
             if i == len(options):
                 pause_prompt()
-
         console.clear()
-    except (KeyboardInterrupt, EOFError):
-        console.print("\n[bold red]Operation interrupted by user.[/bold red]")
-        exit(0)
-
+except (KeyboardInterrupt, EOFError):
+    console.print("\n[bold red]Operation interrupted by user.[/bold red]")
+    exit(0)
